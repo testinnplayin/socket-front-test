@@ -1,14 +1,22 @@
 <template>
-    <form @submit.prevent="handleSubmit" id="test-area">
-        <div class="awesome-field-input-group">
-            <label for="awesome-field">Awesome Field:</label>
-            <input
-                v-model="thingamabob.awesome_field"
-                id="awesome-field" 
-                type="text" />
-        </div>
-        <button type="submit">Submit</button>
-    </form>
+    <div>
+        <ul v-if="thinggies && thinggies.length > 0" class="thinggy-collection">
+            <li v-for="(thinggy, ind) of thinggies" 
+                :key="ind">
+                {{thinggy.awesome_field}}
+            </li>
+        </ul>
+        <form @submit.prevent="handleSubmit" id="test-area">
+            <div class="awesome-field-input-group">
+                <label for="awesome-field">Awesome Field:</label>
+                <input
+                    v-model="thingamabob.awesome_field"
+                    id="awesome-field" 
+                    type="text" />
+            </div>
+            <button type="submit">Submit</button>
+        </form>
+    </div>
 </template>
 
 <script>
