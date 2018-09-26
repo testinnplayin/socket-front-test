@@ -1,10 +1,14 @@
 <template>
   <div id="app">
     <img src="./assets/logo.png">
+    <nav>
+      <li><router-link to="/thingamabobs">List of Thingamabobs</router-link></li>
+    </nav>
     <h1>{{ thinggyMsg }}</h1>
     <test-area
       @handleSubmit="handleSubmit"
       :thingamabob="thingamabob"></test-area>
+      <router-view></router-view>
   </div>
 </template>
 

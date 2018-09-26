@@ -1,11 +1,5 @@
 <template>
     <div>
-        <ul v-if="thinggies && thinggies.length > 0" class="thinggy-collection">
-            <li v-for="(thinggy, ind) of thinggies" 
-                :key="ind">
-                {{thinggy.awesome_field}}
-            </li>
-        </ul>
         <form @submit.prevent="handleSubmit" id="test-area">
             <div class="awesome-field-input-group">
                 <label for="awesome-field">Awesome Field:</label>
