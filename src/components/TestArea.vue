@@ -3,7 +3,7 @@
         <div class="awesome-field-input-group">
             <label for="awesome-field">Awesome Field:</label>
             <input
-                v-model="thingamabob.awesomeField"
+                v-model="thingamabob.awesome_field"
                 id="awesome-field" 
                 type="text" />
         </div>

@@ -17,7 +17,7 @@ export default {
     return {
       msg: 'Welcome to Your Vue.js App',
       thingamabob: {
-        awesomeField: null
+        awesome_field: null
       },
       thinggies: [],
       socket: io('localhost:3000')
@@ -29,6 +29,7 @@ export default {
   methods: {
     handleSubmit: function () {
       console.log('handleSubmit triggered')
+      this.socket.emit('CREATE_THINGGY', this.thingamabob)
     }
   },
   mounted: function () {
