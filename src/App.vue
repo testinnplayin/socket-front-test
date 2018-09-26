@@ -1,7 +1,7 @@
 <template>
   <div id="app">
     <img src="./assets/logo.png">
-    <h1>{{ msg }}</h1>
+    <h1>{{ thinggyMsg }}</h1>
     <test-area
       @handleSubmit="handleSubmit"
       :thingamabob="thingamabob"></test-area>
@@ -15,11 +15,11 @@ export default {
   name: 'app',
   data () {
     return {
-      msg: 'Welcome to Your Vue.js App',
+      error : null,
       thingamabob: {
         awesome_field: null
       },
-      thinggies: [],
+      thinggyMsg: 'Say something! Anything!',
       socket: io('localhost:3000')
     }
   },
@@ -33,10 +33,16 @@ export default {
     }
   },
   mounted: function () {
-    this.socket.on('CREATION', response => {
+    this.socket.on('CREATION_SUCCESS', response => {
       console.log('response ', response)
-      this.thinggies.push(response)
-    });
+      this.thinggyMsg = response.awesome_field
+    })
+
+    this.socket.on('CREATION_ERROR', err => {
+      console.log('error ', err)
+      this.error = err
+      this.thinggyMsg = 'There has been an error'
+    })
   }
 }
 </script>
