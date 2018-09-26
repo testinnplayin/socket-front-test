@@ -2,7 +2,9 @@
   <div id="app">
     <img src="./assets/logo.png">
     <h1>{{ msg }}</h1>
-    <test-area></test-area>
+    <test-area
+      @handleSubmit="handleSubmit"
+      :thingamabob="thingamabob"></test-area>
   </div>
 </template>
 
@@ -14,11 +16,26 @@ export default {
   data () {
     return {
       msg: 'Welcome to Your Vue.js App',
+      thingamabob: {
+        awesomeField: null
+      },
+      thinggies: [],
       socket: io('localhost:3000')
     }
   },
   components: {
     TestArea
+  },
+  methods: {
+    handleSubmit: function () {
+      console.log('handleSubmit triggered')
+    }
+  },
+  mounted: function () {
+    this.socket.on('CREATION', response => {
+      console.log('response ', response)
+      this.thinggies.push(response)
+    });
   }
 }
 </script>
