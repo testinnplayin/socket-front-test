@@ -4,11 +4,13 @@
     <nav>
       <li><router-link to="/thingamabobs">List of Thingamabobs</router-link></li>
     </nav>
-    <h1>{{ thinggyMsg }}</h1>
+    <h1>{{ thinggyMsg.awesome_field }}</h1>
     <test-area
       @handleSubmit="handleSubmit"
       :thingamabob="thingamabob"></test-area>
-      <router-view></router-view>
+      <router-view
+        @handleDelete="handleDelete"
+        :thinggy-msg="thinggyMsg"></router-view>
   </div>
 </template>
 
@@ -19,6 +21,7 @@ export default {
   name: 'app',
   data () {
     return {
+      delI : null,
       error : null,
       thingamabob: {
         awesome_field: null
@@ -31,6 +34,11 @@ export default {
     TestArea
   },
   methods: {
+    handleDelete: function (tId, i) {
+      console.log('handleDelete triggered ', tId, i)
+      this.delI = i
+      this.socket.emit('DELETE_THINGGY', {_id : tId })
+    },
     handleSubmit: function () {
       console.log('handleSubmit triggered')
       this.socket.emit('CREATE_THINGGY', this.thingamabob)
@@ -40,13 +48,18 @@ export default {
   mounted: function () {
     this.socket.on('CREATION_SUCCESS', response => {
       console.log('response ', response)
-      this.thinggyMsg = response.awesome_field
+      this.thinggyMsg = { awesome_field : response.awesome_field }
     })
 
     this.socket.on('CREATION_ERROR', err => {
       console.log('error ', err)
       this.error = err
-      this.thinggyMsg = 'There has been an error'
+      this.thinggyMsg = { awesome_field : 'There has been an error' }
+    })
+
+    this.socket.on('DELETION_SUCCESS', response => {
+      console.log('response ', response)
+      this.thinggyMsg = { _id : response._id, index : this.delI }
     })
   }
 }

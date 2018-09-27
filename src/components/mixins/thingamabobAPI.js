@@ -14,9 +14,7 @@ export default {
     
             fetch(getReq)
                 .then(response => {
-                    console.log('response ', response)
                     if (!response.ok) throw new Error(response.statusTxt)
-                    console.log('get all thingamabobs request ', response)
                     return response
                 })
                 .then(res => res.json())
