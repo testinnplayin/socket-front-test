@@ -10,7 +10,9 @@
       :thingamabob="thingamabob"></test-area>
       <router-view
         @handleDelete="handleDelete"
-        :thinggy-msg="thinggyMsg"></router-view>
+        :dohicky-msg="dohickyMsg"
+        :thinggy-msg="thinggyMsg"
+        :u-doh="uDoh"></router-view>
   </div>
 </template>
 
@@ -22,12 +24,14 @@ export default {
   data () {
     return {
       delI : null,
+      dohickyMsg : null,
       error : null,
       thingamabob: {
         awesome_field: null
       },
       thinggyMsg: 'Say something! Anything!',
-      socket: io('localhost:3000')
+      socket: io('localhost:3000'),
+      uDoh : null
     }
   },
   components: {
@@ -48,11 +52,11 @@ export default {
   mounted: function () {
     this.socket.on('CREATION_SUCCESS', response => {
       console.log('response ', response)
-      this.thinggyMsg = { awesome_field : response.awesome_field }
+      this.thinggyMsg = response
     })
 
     this.socket.on('CREATION_ERROR', err => {
-      console.log('error ', err)
+      console.error('error ', err)
       this.error = err
       this.thinggyMsg = { awesome_field : 'There has been an error' }
     })
@@ -60,6 +64,26 @@ export default {
     this.socket.on('DELETION_SUCCESS', response => {
       console.log('response ', response)
       this.thinggyMsg = { _id : response._id, index : this.delI }
+    })
+
+    this.socket.on('DELETION_ERROR', err => {
+      console.error('error ', err)
+      this.thinggyMsg = { awesome_field : `There has been an error : ${err}` };
+    });
+
+    this.socket.on('D_CREATE_SUCCESS', response => {
+      console.log('dohicky response ', response)
+      this.dohickyMsg = response
+    })
+
+    this.socket.on('D_CREATE_ERROR', err => {
+      console.error('dohicky error ', err)
+      this.dohickyMsg = `Dohicky error : ${err}`
+    })
+
+    this.socket.on('D_UPDATE_SUCCESS', response => {
+      console.log('dohicky updated ', response)
+      this.uDoh = response
     })
   }
 }
