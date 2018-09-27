@@ -34,6 +34,7 @@ export default {
     handleSubmit: function () {
       console.log('handleSubmit triggered')
       this.socket.emit('CREATE_THINGGY', this.thingamabob)
+      this.thingamabob.awesome_field = null
     }
   },
   mounted: function () {
