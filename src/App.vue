@@ -73,7 +73,7 @@ export default {
 
     this.socket.on('D_CREATE_SUCCESS', response => {
       console.log('dohicky response ', response)
-      this.dohickyMsg = response
+      this.dohickyMsg = response[0]; // NOTE: we're doing this on a find on back-end, which always results in an array
     })
 
     this.socket.on('D_CREATE_ERROR', err => {
