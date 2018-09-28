@@ -5,20 +5,25 @@
       <li><router-link to="/thingamabobs">List of Thingamabobs</router-link></li>
     </nav>
     <h1>{{ thinggyMsg.awesome_field }}</h1>
-    <test-area
+    <button @click="handleAJAXFetch" type="button">AJAX Fetch TSV histories</button>
+    <button @click="handleSockFetch" type="button">Socket Fetch TSV histories</button>
+  </div>
+</template>
+
+<!-- <test-area
       @handleSubmit="handleSubmit"
       :thingamabob="thingamabob"></test-area>
       <router-view
         @handleDelete="handleDelete"
         :dohicky-msg="dohickyMsg"
         :thinggy-msg="thinggyMsg"
-        :u-doh="uDoh"></router-view>
-  </div>
-</template>
+        :u-doh="uDoh"></router-view> -->
 
 <script>
 import io from 'socket.io-client'
-import TestArea from './components/TestArea'
+// import TestArea from './components/TestArea'
+import tsvHistoryAPI from './components/mixins/tsvHistoryAPI'
+
 export default {
   name: 'app',
   data () {
@@ -35,13 +40,22 @@ export default {
     }
   },
   components: {
-    TestArea
+    // TestArea
   },
   methods: {
+    handleAJAXFetch: function () {
+      const tsvId = "5b6aee85a7744b1783cadc63";
+      this.fetchTsvHistories(tsvId)
+    },
     handleDelete: function (tId, i) {
       console.log('handleDelete triggered ', tId, i)
       this.delI = i
       this.socket.emit('DELETE_THINGGY', {_id : tId })
+    },
+    handleSockFetch : function () {
+      const tsvId = "5b6aee85a7744b1783cadc63";
+      console.log('socket t0 ', Date.now())
+      this.socket.emit('GET_TSV_HISTORIES', tsvId)
     },
     handleSubmit: function () {
       console.log('handleSubmit triggered')
@@ -49,42 +63,51 @@ export default {
       this.thingamabob.awesome_field = null
     }
   },
+  mixins : [tsvHistoryAPI],
   mounted: function () {
-    this.socket.on('CREATION_SUCCESS', response => {
-      console.log('response ', response)
-      this.thinggyMsg = response
+    this.socket.on('TSV_HISTS_SUCCESS', response => {
+      console.log('socket t1 ', Date.now())
+      console.log('TSV history success ', response)
     })
 
-    this.socket.on('CREATION_ERROR', err => {
-      console.error('error ', err)
-      this.error = err
-      this.thinggyMsg = { awesome_field : 'There has been an error' }
+    this.socket.on('TSV_HISTS_ERROR', err => {
+      console.error('TSV history error ', err)
     })
+    // this.socket.on('CREATION_SUCCESS', response => {
+    //   console.log('response ', response)
+    //   this.thinggyMsg = response
+    // })
 
-    this.socket.on('DELETION_SUCCESS', response => {
-      console.log('response ', response)
-      this.thinggyMsg = { _id : response._id, index : this.delI }
-    })
+    // this.socket.on('CREATION_ERROR', err => {
+    //   console.error('error ', err)
+    //   this.error = err
+    //   this.thinggyMsg = { awesome_field : 'There has been an error' }
+    // })
 
-    this.socket.on('DELETION_ERROR', err => {
-      console.error('error ', err)
-      this.thinggyMsg = { awesome_field : `There has been an error : ${err}` };
-    });
+    // this.socket.on('DELETION_SUCCESS', response => {
+    //   console.log('response ', response)
+    //   this.thinggyMsg = { _id : response._id, index : this.delI }
+    // })
 
-    this.socket.on('D_CREATE_SUCCESS', response => {
-      console.log('dohicky response ', response)
-      this.dohickyMsg = response[0]; // NOTE: we're doing this on a find on back-end, which always results in an array
-    })
+    // this.socket.on('DELETION_ERROR', err => {
+    //   console.error('error ', err)
+    //   this.thinggyMsg = { awesome_field : `There has been an error : ${err}` };
+    // });
 
-    this.socket.on('D_CREATE_ERROR', err => {
-      console.error('dohicky error ', err)
-      this.dohickyMsg = `Dohicky error : ${err}`
-    })
+    // this.socket.on('D_CREATE_SUCCESS', response => {
+    //   console.log('dohicky response ', response)
+    //   this.dohickyMsg = response[0]; // NOTE: we're doing this on a find on back-end, which always results in an array
+    // })
 
-    this.socket.on('D_UPDATE_SUCCESS', response => {
-      console.log('dohicky updated ', response)
-      this.uDoh = response
-    })
+    // this.socket.on('D_CREATE_ERROR', err => {
+    //   console.error('dohicky error ', err)
+    //   this.dohickyMsg = `Dohicky error : ${err}`
+    // })
+
+    // this.socket.on('D_UPDATE_SUCCESS', response => {
+    //   console.log('dohicky updated ', response)
+    //   this.uDoh = response
+    // })
   }
 }
 </script>
