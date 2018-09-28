@@ -6,10 +6,12 @@ export default {
             const endpnt = `http://localhost:3000/tsvs/${tsvId}`
             const reqOptions = { method : 'GET', mode : 'cors' }
             const getReq = new Request(endpnt, reqOptions)
-            console.log('AJAX t0 ', Date.now())
+            this.aT0 = Date.now()
+            console.log('AJAX t0 ', this.aT0)
             fetch(getReq)
                 .then(response => {
-                    console.log('AJAX t1 ', Date.now())
+                    this.aT1 = Date.now()
+                    console.log('AJAX t1 ', this.aT1)
                     if (!response.ok) throw new Error(response.statusText)
                     return response
                 })

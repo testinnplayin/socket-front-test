@@ -5,7 +5,11 @@
       <li><router-link to="/thingamabobs">List of Thingamabobs</router-link></li>
     </nav>
     <h1>{{ thinggyMsg.awesome_field }}</h1>
+    <span class="time-spans">AJAX start time: {{aT0}}</span>
+    <span class="time-spans">AJAX stop time: {{aT1}}</span>
     <button @click="handleAJAXFetch" type="button">AJAX Fetch TSV histories</button>
+    <span class="time-spans">Socket start time: {{sT0}}</span>
+    <span class="time-spans">Socket stop time: {{sT1}}</span>
     <button @click="handleSockFetch" type="button">Socket Fetch TSV histories</button>
   </div>
 </template>
@@ -28,6 +32,8 @@ export default {
   name: 'app',
   data () {
     return {
+      aT0 : 0,
+      aT1 : 0,
       delI : null,
       dohickyMsg : null,
       error : null,
@@ -36,6 +42,8 @@ export default {
       },
       thinggyMsg: 'Say something! Anything!',
       socket: io('localhost:3000'),
+      sT0 : 0,
+      sT1 : 0,
       uDoh : null
     }
   },
@@ -54,7 +62,8 @@ export default {
     },
     handleSockFetch : function () {
       const tsvId = "5b6aee85a7744b1783cadc63";
-      console.log('socket t0 ', Date.now())
+      this.sT0 = Date.now()
+      console.log('socket t0 ', this.sT0)
       this.socket.emit('GET_TSV_HISTORIES', tsvId)
     },
     handleSubmit: function () {
@@ -66,7 +75,8 @@ export default {
   mixins : [tsvHistoryAPI],
   mounted: function () {
     this.socket.on('TSV_HISTS_SUCCESS', response => {
-      console.log('socket t1 ', Date.now())
+      this.sT1 = Date.now()
+      console.log('socket t1 ', this.sT1)
       console.log('TSV history success ', response)
     })
 
@@ -124,6 +134,11 @@ export default {
 
 h1, h2 {
   font-weight: normal;
+}
+
+.time-spans {
+  display: block;
+  font-weight: bold;
 }
 
 ul {
