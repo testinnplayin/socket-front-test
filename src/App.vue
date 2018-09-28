@@ -1,8 +1,18 @@
 <template>
   <div id="app">
     <img src="./assets/logo.png">
-    <h1>{{ msg }}</h1>
-    <test-area></test-area>
+    <nav>
+      <li><router-link to="/thingamabobs">List of Thingamabobs</router-link></li>
+    </nav>
+    <h1>{{ thinggyMsg.awesome_field }}</h1>
+    <test-area
+      @handleSubmit="handleSubmit"
+      :thingamabob="thingamabob"></test-area>
+      <router-view
+        @handleDelete="handleDelete"
+        :dohicky-msg="dohickyMsg"
+        :thinggy-msg="thinggyMsg"
+        :u-doh="uDoh"></router-view>
   </div>
 </template>
 
@@ -13,12 +23,68 @@ export default {
   name: 'app',
   data () {
     return {
-      msg: 'Welcome to Your Vue.js App',
-      socket: io('localhost:3000')
+      delI : null,
+      dohickyMsg : null,
+      error : null,
+      thingamabob: {
+        awesome_field: null
+      },
+      thinggyMsg: 'Say something! Anything!',
+      socket: io('localhost:3000'),
+      uDoh : null
     }
   },
   components: {
     TestArea
+  },
+  methods: {
+    handleDelete: function (tId, i) {
+      console.log('handleDelete triggered ', tId, i)
+      this.delI = i
+      this.socket.emit('DELETE_THINGGY', {_id : tId })
+    },
+    handleSubmit: function () {
+      console.log('handleSubmit triggered')
+      this.socket.emit('CREATE_THINGGY', this.thingamabob)
+      this.thingamabob.awesome_field = null
+    }
+  },
+  mounted: function () {
+    this.socket.on('CREATION_SUCCESS', response => {
+      console.log('response ', response)
+      this.thinggyMsg = response
+    })
+
+    this.socket.on('CREATION_ERROR', err => {
+      console.error('error ', err)
+      this.error = err
+      this.thinggyMsg = { awesome_field : 'There has been an error' }
+    })
+
+    this.socket.on('DELETION_SUCCESS', response => {
+      console.log('response ', response)
+      this.thinggyMsg = { _id : response._id, index : this.delI }
+    })
+
+    this.socket.on('DELETION_ERROR', err => {
+      console.error('error ', err)
+      this.thinggyMsg = { awesome_field : `There has been an error : ${err}` };
+    });
+
+    this.socket.on('D_CREATE_SUCCESS', response => {
+      console.log('dohicky response ', response)
+      this.dohickyMsg = response
+    })
+
+    this.socket.on('D_CREATE_ERROR', err => {
+      console.error('dohicky error ', err)
+      this.dohickyMsg = `Dohicky error : ${err}`
+    })
+
+    this.socket.on('D_UPDATE_SUCCESS', response => {
+      console.log('dohicky updated ', response)
+      this.uDoh = response
+    })
   }
 }
 </script>
