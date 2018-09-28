@@ -1,9 +1,9 @@
 <template>
   <div id="app">
     <img src="./assets/logo.png">
-    <nav>
+    <!-- <nav>
       <li><router-link to="/thingamabobs">List of Thingamabobs</router-link></li>
-    </nav>
+    </nav> -->
     <h1>{{ thinggyMsg.awesome_field }}</h1>
     <span class="time-spans">AJAX start time: {{aT0}}</span>
     <span class="time-spans">AJAX stop time: {{aT1}}</span>
